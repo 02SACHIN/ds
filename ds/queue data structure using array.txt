@@ -1,0 +1,85 @@
+Implementation of queue data structure using array
+#include &lt;bits/stdc++.h&gt;
+#include &lt;iostream&gt;
+using namespace std;
+ 
+class Queue {
+public:
+    int front, rear, size;
+    unsigned capacity;
+    int* array;
+};
+ 
+Queue* createQueue(unsigned capacity)
+{
+    Queue* queue = new Queue();
+    queue-&gt;capacity = capacity;
+    queue-&gt;front = queue-&gt;size = 0;
+     
+    queue-&gt;rear = capacity - 1;
+    queue-&gt;array = new int[(
+        queue-&gt;capacity * sizeof(int))];
+    return queue;
+}
+ 
+int isFull(Queue* queue)
+{
+    return (queue-&gt;size == queue-&gt;capacity);
+}
+
+int isEmpty(Queue* queue)
+{
+    return (queue-&gt;size == 0);
+}
+
+void enqueue(Queue* queue, int item)
+{
+    if (isFull(queue))
+        return;
+    queue-&gt;rear = (queue-&gt;rear + 1)
+                % queue-&gt;capacity;
+    queue-&gt;array[queue-&gt;rear] = item;
+    queue-&gt;size = queue-&gt;size + 1;
+    cout &lt;&lt; item &lt;&lt; &quot; enqueued to queue\n&quot;;
+}
+ 
+int dequeue(Queue* queue)
+{
+    if (isEmpty(queue))
+        return INT_MIN;
+    int item = queue-&gt;array[queue-&gt;front];
+    queue-&gt;front = (queue-&gt;front + 1)
+                % queue-&gt;capacity;
+    queue-&gt;size = queue-&gt;size - 1;
+    return item;
+}
+
+int front(Queue* queue)
+{
+    if (isEmpty(queue))
+        return INT_MIN;
+return queue-&gt;array[queue-&gt;front];
+}
+ 
+int rear(Queue* queue)
+{
+    if (isEmpty(queue))
+        return INT_MIN;
+    return queue-&gt;array[queue-&gt;rear];
+}
+ 
+int main()
+{
+    Queue* queue = createQueue(1000);
+    enqueue(queue, 10);
+    enqueue(queue, 20);
+    enqueue(queue, 30);
+    enqueue(queue, 40);
+    cout &lt;&lt; dequeue(queue)
+        &lt;&lt; &quot; dequeued from queue\n&quot;;
+    cout &lt;&lt; &quot;Front item is &quot;
+        &lt;&lt; front(queue) &lt;&lt; endl;
+    cout &lt;&lt; &quot;Rear item is &quot;
+        &lt;&lt; rear(queue) &lt;&lt; endl;
+    return 0;
+}

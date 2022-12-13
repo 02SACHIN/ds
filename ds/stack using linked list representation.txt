@@ -1,0 +1,69 @@
+Implement a stack using linked list representation
+#include &lt;bits/stdc++.h&gt;
+#include &lt;iostream&gt;
+using namespace std;
+class Node{
+    public:
+    int data;
+    Node *next;
+    Node(int x){
+        data=x;
+        next=NULL;
+    }
+};
+class MyStack{
+    public:
+    Node *head;
+    int sz;
+    MyStack(){
+        head=NULL;
+        sz=0;
+    }
+   
+    void push(int x){
+        Node *temp=new Node(x);
+        temp-&gt;next=head;
+        head=temp;
+        sz++;
+    }
+   
+    int pop(){
+        if(head==NULL){cout&lt;&lt;&quot;Stack is
+Empty&quot;&lt;&lt;endl;return INT_MAX;}
+
+        int res=head-&gt;data;
+        Node *temp=head;
+        head=head-&gt;next;
+        delete(temp);
+        sz--;
+        return res;
+    }
+   
+    int peek(){
+        if(head==NULL){cout&lt;&lt;&quot;Stack is
+Empty&quot;&lt;&lt;endl;return INT_MAX;}
+        return head-&gt;data;
+    }
+   
+    int size(){
+        return sz;
+    }
+   
+    bool isEmpty(){
+        return head==NULL;
+    }
+};
+int main()
+{
+    MyStack s;
+    s.push(5);
+    s.push(10);
+    s.push(20);
+    cout&lt;&lt;s.pop()&lt;&lt;endl;
+    cout&lt;&lt;s.size()&lt;&lt;endl;
+    cout&lt;&lt;s.peek()&lt;&lt;endl;
+    cout&lt;&lt;s.isEmpty()&lt;&lt;endl;
+ 
+
+    return 0;
+}

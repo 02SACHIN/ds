@@ -1,0 +1,277 @@
+#include "avl_tree_defn.h"
+#include <queue>
+
+//Constructor
+
+template <typename t> avlTree<t>::avlTree()
+{
+    root = new Node<t>();
+}
+
+template <typename t> avlTree<t>::avlTree(t value)
+{
+    root = new Node<t>(value);
+}
+
+//Insertion Function
+
+template <typename t> Node<t>* avlTree<t>::insert(Node<t>* node, t key)
+{
+    if(node == NULL)
+    {
+        Node<t>* temp = new Node<t>(key);
+        return temp;
+    }
+
+    if (key < node -> data)
+    {
+        node->lchild = insert(node->lchild, key);
+    }
+
+    else if (key > node -> data)
+    {
+        node->rchild = insert(node->rchild, key);
+    }
+
+    else
+    {
+        return node;
+    }
+
+    node -> height = 1 + std::max(height(node->lchild), height(node->rchild));
+
+    int balance = getBalance(node);
+
+    if (balance > 1 && key < node -> lchild -> data)
+    {
+        return rotateRight(node);
+    }
+
+    // Right Right Case
+    if (balance < -1 && key > node -> rchild -> data)
+    {
+        return rotateLeft(node);
+    }
+
+    // Left Right Case
+    if (balance > 1 && key > node->lchild->data)
+    {
+        node->lchild = rotateLeft(node->lchild);
+        return rotateRight(node);
+    }
+
+    // Right Left Case
+    if (balance < -1 && key < node -> rchild -> data)
+    {
+        node->rchild = rotateRight(node->rchild);
+        return rotateLeft(node);
+    }
+
+    return node;
+}
+
+//Height
+
+template <typename t> int avlTree<t>::height(Node<t>* n)
+{
+    if(n == NULL)
+    {
+        return 0;
+    }
+
+    else 
+    {
+        int lheight = height(n->lchild);
+        int rheight = height(n->rchild);
+
+        if(lheight > rheight)
+        {
+            return(lheight + 1);
+        }
+            
+        else
+        {
+            return(rheight + 1);
+        }     
+    }
+}
+
+template <typename t> int avlTree<t>::getBalance(Node<t>* node)
+{
+    if (node == NULL)
+    {
+        return 0;
+    }
+        
+    return height(node->lchild) - height(node->rchild);
+}
+
+//Rotation Functions
+template <typename t> Node<t>* avlTree<t>::rotateRight(Node<t>* node)
+{
+    Node<t>* temp = node->lchild;
+
+    Node<t>* T2 = temp->rchild;
+
+    temp -> rchild = node;
+
+    node->lchild = T2;
+
+    node->height = std::max(height(node->lchild), height(node->rchild)) + 1;
+
+    temp->height = std::max(height(temp->lchild), height(temp->rchild)) + 1;
+
+    return temp;
+}
+
+template <typename t> Node<t>* avlTree<t>::rotateLeft(Node<t>* node)
+{
+    Node<t>* temp = node->rchild;
+
+    Node<t>* T2 = temp->lchild;
+
+    temp -> lchild = node;
+    
+    node -> rchild = T2;
+
+    node->height = std::max(height(node->lchild), height(node->rchild)) + 1;
+
+    temp->height = std::max(height(temp->lchild), height(temp->rchild)) + 1;
+
+    return temp;
+}
+
+//Traversal functions
+
+template <typename t> void avlTree<t>::inorder(Node<t>* temp)
+{
+    if(temp == NULL)
+    {
+        return ;
+    }
+
+    inorder(temp -> lchild);
+    std::cout<<temp -> data<<" ";
+    inorder(temp -> rchild);
+}
+
+template <typename t> void avlTree<t>::preorder(Node<t>* temp)
+{
+    if(temp == NULL)
+    {
+        return ;
+    }
+
+    std::cout<<temp -> data<<" ";
+    preorder(temp -> lchild);
+    preorder(temp -> rchild);
+
+}
+
+template <typename t> void avlTree<t>::postorder(Node<t>* temp)
+{
+    if(temp == NULL)
+    {
+        return ;
+    }
+
+    postorder(temp -> lchild);
+    postorder(temp -> rchild);
+    std::cout<<temp -> data<<" ";
+}
+
+template <typename t> void avlTree<t>::level_order(Node<t>* temp)
+{
+    if(temp == NULL)
+    {
+        return;
+    }
+
+    std::queue<Node<t>*> q;
+    q.push(temp);
+
+    while(q.empty() == false)
+    {
+        Node<t>* node = q.front();
+        std::cout<<node ->data<<" ";
+        q.pop();
+
+        if(node -> lchild != NULL)
+        {
+            q.push(node -> lchild);
+        }
+
+        if(node -> rchild != NULL)
+        {
+            q.push(node -> rchild);
+        }
+    }
+
+}
+
+//Searching Functions
+
+template <typename t> bool avlTree<t>::check_element(t element)
+{
+    Node<t>* temp = root;
+
+    while(temp != NULL)
+    {
+        if(temp->data > element)
+        {
+            temp = temp -> lchild;
+        }
+
+        else if(temp->data < element)
+        {
+            temp = temp -> rchild;
+        }
+
+        else
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+template <typename t> Node<t>* avlTree<t>::search(t value)
+{
+    Node<t>* parent_node = NULL;
+    Node<t>* temp = root;
+
+    while(temp != NULL)
+    {
+        
+        if(temp -> data > value)
+        {
+            parent_node = temp;
+            temp = temp -> lchild;
+        }
+
+        else if(temp -> data < value)
+        {
+            parent_node = temp;
+            temp = temp -> rchild;
+        }
+
+        else
+        {
+            return parent_node;
+        }
+    }
+
+    return nullptr;
+}
+
+int main()
+{
+    avlTree<int> t(30);
+
+    t.root = t.insert(t.root, 10);
+    t.root = t.insert(t.root, 20);
+    t.root = t.insert(t.root, 40);
+    t.root = t.insert(t.root, 50);
+    t.root = t.insert(t.root, 25);
+}

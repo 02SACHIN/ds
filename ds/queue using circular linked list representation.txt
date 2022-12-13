@@ -1,0 +1,67 @@
+Implementation queue using circular linked list representation
+#include &lt;bits/stdc++.h&gt;
+#include &lt;iostream&gt;
+using namespace std;
+class QNode {
+    public:
+    int data;
+    QNode* next;
+    QNode(int d)
+    {
+        data = d;
+        next = NULL;
+    }
+};
+class Queue {
+    public:
+    QNode *front, *rear;
+    Queue()
+    {
+        front = rear = NULL;
+    }
+    void enQueue(int x)
+    {
+         
+        QNode* temp = new QNode(x);
+         
+        if (rear == NULL) {
+            front = rear = temp;
+            return;
+
+        }
+         
+        rear-&gt;next = temp;
+        rear = temp;
+    }
+     
+    void deQueue()
+    {
+         
+        if (front == NULL)
+            return;
+     
+        QNode* temp = front;
+        front = front-&gt;next;
+   
+        if (front == NULL)
+            rear = NULL;
+        delete (temp);
+    }
+};
+
+int main()
+{
+    Queue q;
+    q.enQueue(10);
+    q.enQueue(20);
+    q.deQueue();
+
+    q.deQueue();
+    q.enQueue(30);
+    q.enQueue(40);
+    q.enQueue(50);
+    q.deQueue();
+    cout &lt;&lt; &quot;Queue Front : &quot; &lt;&lt; (q.front)-&gt;data &lt;&lt;
+endl;
+    cout &lt;&lt; &quot;Queue Rear : &quot; &lt;&lt; (q.rear)-&gt;data;
+}
